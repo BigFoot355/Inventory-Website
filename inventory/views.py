@@ -85,6 +85,11 @@ def register_component(request):
             sala_arrumacao = Room.objects.get(id=sala_arrumacao_id)
             armario = Cabinet.objects.get(id=armario_id)
 
+            # Validação: Verificar se o armário pertence à sala selecionada
+            if armario.room != sala_arrumacao:
+                messages.error(request, f'O armário "{armario.name}" pertence à sala "{armario.room.name}", mas você selecionou a sala "{sala_arrumacao.name}". Escolha um armário da mesma sala.')
+                return redirect('register_component')
+
             # Criar o componente
             component = Component(
                 curso=curso,
@@ -149,6 +154,11 @@ def edit_component(request, component_id):
             # Obter os objetos Room e Cabinet a partir dos IDs
             sala_arrumacao = Room.objects.get(id=sala_arrumacao_id)
             armario = Cabinet.objects.get(id=armario_id)
+
+            # Validação: Verificar se o armário pertence à sala selecionada
+            if armario.room != sala_arrumacao:
+                messages.error(request, f'O armário "{armario.name}" pertence à sala "{armario.room.name}", mas você selecionou a sala "{sala_arrumacao.name}". Escolha um armário da mesma sala.')
+                return redirect('edit_component', component_id=component_id)
 
             # Atualizar o componente
             component.curso = curso
