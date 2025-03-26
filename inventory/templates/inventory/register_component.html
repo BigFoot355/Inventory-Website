@@ -4,8 +4,8 @@
 {% block title %}Registrar Componente - Sistema de Inventário{% endblock %}
 
 {% block content %}
-<div class="register-container">
-    <h1 class="register-title">Registrar Novo Componente</h1>
+<div class="register-component-container">
+    <h1 class="register-component-title">Registrar Componente</h1>
 
     <!-- Mensagens de Feedback -->
     {% if messages %}
@@ -38,7 +38,7 @@
             <input type="text" name="categoria" id="categoria" required>
         </div>
         <div class="form-group">
-            <label for="sub_categoria">Sub-categoria (opcional)</label>
+            <label for="sub_categoria">Sub-categoria</label>
             <input type="text" name="sub_categoria" id="sub_categoria">
         </div>
         <div class="form-group">
@@ -59,62 +59,66 @@
             <select name="armario" id="armario" required>
                 <option value="" disabled selected>Selecione um armário</option>
                 {% for cabinet in cabinets %}
-                    <option value="{{ cabinet.id }}">{{ cabinet.name }} ({{ cabinet.room.name }})</option>
+                    <option value="{{ cabinet.id }}" data-room-id="{{ cabinet.room.id }}">{{ cabinet.name }} ({{ cabinet.room.name }})</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
-            <label for="gaveta">Gaveta (opcional)</label>
+            <label for="gaveta">Gaveta</label>
             <input type="text" name="gaveta" id="gaveta">
         </div>
         <div class="form-group">
-            <label for="localizacao_aberta">Localização Aberta (opcional)</label>
+            <label for="localizacao_aberta">Localização Aberta</label>
             <input type="text" name="localizacao_aberta" id="localizacao_aberta">
         </div>
         <div class="form-group">
             <label for="quantidade">Quantidade</label>
-            <input type="number" name="quantidade" id="quantidade" value="1" min="1" required>
+            <input type="number" name="quantidade" id="quantidade" min="1" value="1" required>
         </div>
         <div class="form-group">
             <label for="status">Status</label>
             <select name="status" id="status">
-                <option value="ativo">Ativo</option>
+                <option value="ativo" selected>Ativo</option>
                 <option value="baixa">Baixa</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="foto">Foto (opcional)</label>
-            <input type="file" name="foto" id="foto" accept="image/*">
+            <label for="foto">Foto</label>
+            <input type="file" name="foto" id="foto">
         </div>
-        <button type="submit" class="btn btn-primary">Registrar</button>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar</a>
+        <button type="submit" class="btn btn-primary">Registrar Componente</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 
 <!-- CSS Embutido -->
 <style>
-    .register-container {
+    /* Register Component Container */
+    .register-component-container {
         max-width: 600px;
         margin: 0 auto;
         padding: 40px 20px;
+    }
+
+    .register-component-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 30px;
+        letter-spacing: -0.5px;
+    }
+
+    /* Mensagens de Feedback */
+    .messages {
+        margin-bottom: 30px;
         text-align: center;
     }
 
-    .register-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 30px;
-        letter-spacing: -1px;
-    }
-
-    .messages {
-        margin-bottom: 30px;
-    }
-
     .alert {
+        display: inline-block;
         padding: 12px 20px;
-        border-radius: 10px;
+        border-radius: 8px;
         margin-bottom: 15px;
         font-size: 1rem;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -130,14 +134,15 @@
         color: #ffffff;
     }
 
+    /* Formulário de Registro */
     .register-form {
-        background: #252525;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         display: flex;
         flex-direction: column;
         gap: 20px;
+        background: #252525;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .form-group {
@@ -147,23 +152,25 @@
     }
 
     .form-group label {
-        text-align: left;
-        font-size: 1rem;
         color: #e0e0e0;
         font-weight: 500;
+        font-size: 1rem;
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
-        width: 100%;
-        padding: 12px;
+        padding: 10px;
         border: none;
         border-radius: 5px;
         background: #333333;
         color: #e0e0e0;
-        font-size: 1rem;
-        transition: box-shadow 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
     }
 
     .form-group input:focus,
@@ -173,28 +180,30 @@
         box-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
     }
 
-    .form-group textarea {
-        resize: vertical;
-        min-height: 100px;
+    .form-group input[type="file"] {
+        padding: 5px;
     }
 
-    .btn {
-        display: inline-block;
-        padding: 14px 30px;
-        border-radius: 30px;
-        text-decoration: none;
+    .register-form button,
+    .register-form a {
+        padding: 12px 30px;
+        border-radius: 8px;
+        text-align: center;
         font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: background 0.3s ease, transform 0.3s ease;
     }
 
     .btn-primary {
-        background: linear-gradient(90deg, #007aff, #005bb5);
+        background: #007aff;
         color: #ffffff;
+        border: none;
+        cursor: pointer;
     }
 
     .btn-primary:hover {
-        background: linear-gradient(90deg, #005bb5, #003f7f);
+        background: #005bb5;
         transform: scale(1.05);
     }
 
@@ -207,5 +216,75 @@
         background: #4a4a4a;
         transform: scale(1.05);
     }
+
+    /* Responsividade */
+    @media (max-width: 576px) {
+        .register-component-container {
+            padding: 20px 15px;
+        }
+
+        .register-component-title {
+            font-size: 2rem;
+        }
+
+        .register-form {
+            padding: 20px;
+        }
+
+        .form-group label {
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            font-size: 0.9rem;
+        }
+
+        .register-form button,
+        .register-form a {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+    }
 </style>
+
+<!-- JavaScript para Filtragem Dinâmica -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const salaSelect = document.getElementById('sala_arrumacao');
+        const armarioSelect = document.getElementById('armario');
+        const allOptions = Array.from(armarioSelect.querySelectorAll('option')).slice(1); // Exclui a opção "Selecione um armário"
+
+        function filterCabinets() {
+            const selectedRoomId = salaSelect.value;
+
+            // Limpar as opções atuais, mantendo apenas a opção padrão
+            armarioSelect.innerHTML = '<option value="" disabled selected>Selecione um armário</option>';
+
+            // Filtrar e adicionar apenas os armários da sala selecionada
+            allOptions.forEach(option => {
+                const roomId = option.getAttribute('data-room-id');
+                if (roomId === selectedRoomId) {
+                    armarioSelect.appendChild(option.cloneNode(true));
+                }
+            });
+
+            // Se não houver armários para a sala selecionada, exibir uma mensagem
+            if (armarioSelect.options.length === 1) {
+                const noOption = document.createElement('option');
+                noOption.value = '';
+                noOption.disabled = true;
+                noOption.textContent = 'Nenhum armário disponível para esta sala';
+                armarioSelect.appendChild(noOption);
+            }
+        }
+
+        // Executar a filtragem ao carregar a página
+        filterCabinets();
+
+        // Executar a filtragem sempre que a sala mudar
+        salaSelect.addEventListener('change', filterCabinets);
+    });
+</script>
 {% endblock %}
