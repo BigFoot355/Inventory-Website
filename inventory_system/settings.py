@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4!y@!=+mjf$l&0@vonng!+%^wuohiaoaxw8(4ro^_3r=kp(v2+
 DEBUG = True
 
 # Hosts permitidos (vazio para localhost em desenvolvimento; adicione hosts reais em produção)
-ALLOWED_HOSTS = ['192.168.25.6', 'localhost']
+ALLOWED_HOSTS = ['inventory-website-ggt9.onrender.com','localhost','192.168.25.6']
 
 # Application definition
 # project/settings.py
