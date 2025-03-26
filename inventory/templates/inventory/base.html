@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Inventário{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <!--<a href="{% url 'homepage' %}">Sistema de Inventário</a> -->
+            <a href="{% url 'homepage' %}"><img src="images/logo_tema2.png" alt=""></a>
+        </div>
+        <nav class="nav">
+            <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                <a href="{% url 'register_component' %}" class="nav-link">Criar Componente</a>
+                <a href="{% url 'logout' %}" class="nav-link">Logout ({{ user.username }})</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 Sistema de Inventário. Desenvolvido com 💻 por Rodrigo Leitão.</p>
+            <div class="footer-links">
+                <a href="#">Sobre</a>
+                <a href="#">Contato</a>
+                <a href="#">Política de Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

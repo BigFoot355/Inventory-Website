@@ -1,0 +1,227 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Exclusões - Sistema de Inventário{% endblock %}
+
+{% block content %}
+<div class="delete-container">
+    <h1 class="delete-title">Gerenciar Exclusões</h1>
+
+    <!-- Mensagens de Feedback -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Lista de Salas -->
+    <div class="delete-section">
+        <h2>Salas</h2>
+        {% if rooms %}
+            <div class="delete-list">
+                {% for room in rooms %}
+                    <div class="delete-item">
+                        <span>{{ room.name }}</span>
+                        <a href="{% url 'delete_room' room.id %}" class="btn btn-sm btn-danger" title="Apagar Sala">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">Nenhuma sala encontrada.</p>
+        {% endif %}
+    </div>
+
+    <!-- Lista de Armários -->
+    <div class="delete-section">
+        <h2>Armários</h2>
+        {% if cabinets %}
+            <div class="delete-list">
+                {% for cabinet in cabinets %}
+                    <div class="delete-item">
+                        <span>{{ cabinet.name }} (Sala: {{ cabinet.room.name }})</span>
+                        <a href="{% url 'delete_cabinet' cabinet.id %}" class="btn btn-sm btn-danger" title="Apagar Armário">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data">Nenhum armário encontrado.</p>
+        {% endif %}
+    </div>
+
+    <!-- Botão Voltar -->
+    <div class="back-button">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar ao Dashboard</a>
+    </div>
+</div>
+
+<!-- CSS Embutido -->
+<style>
+    /* Delete Container */
+    .delete-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .delete-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 30px;
+        letter-spacing: -0.5px;
+    }
+
+    /* Mensagens de Feedback */
+    .messages {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .alert {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .alert-success {
+        background: #34d399;
+        color: #1a1a1a;
+    }
+
+    .alert-error {
+        background: #f87171;
+        color: #ffffff;
+    }
+
+    /* Seções de Exclusão */
+    .delete-section {
+        margin-bottom: 40px;
+    }
+
+    .delete-section h2 {
+        font-size: 1.8rem;
+        color: #e0e0e0;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #3a3a3a;
+        padding-bottom: 10px;
+    }
+
+    .delete-list {
+        background: #252525;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        padding: 15px;
+    }
+
+    .delete-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 1px solid #3a3a3a;
+    }
+
+    .delete-item:last-child {
+        border-bottom: none;
+    }
+
+    .delete-item span {
+        color: #e0e0e0;
+        font-size: 1rem;
+    }
+
+    .btn-sm {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background 0.3s ease;
+    }
+
+    .btn-danger {
+        background: #f87171;
+    }
+
+    .btn-danger:hover {
+        background: #ef4444;
+    }
+
+    /* Mensagem de "Nenhum Item" */
+    .no-data {
+        text-align: center;
+        padding: 20px;
+        color: #a0a0a0;
+        font-style: italic;
+        font-size: 1.1rem;
+        background: #252525;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Botão Voltar */
+    .back-button {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-secondary {
+        display: inline-block;
+        padding: 12px 30px;
+        border-radius: 8px;
+        background: #333333;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #4a4a4a;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .delete-container {
+            padding: 20px 15px;
+        }
+
+        .delete-title {
+            font-size: 2rem;
+        }
+
+        .delete-section h2 {
+            font-size: 1.5rem;
+        }
+
+        .delete-item span {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            width: 28px;
+            height: 28px;
+        }
+    }
+</style>
+{% endblock %}

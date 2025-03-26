@@ -1,0 +1,167 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Login - Sistema de Inventário{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1 class="login-title">Login</h1>
+
+    <!-- Mensagens de Feedback -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulário de Login -->
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Nome de Usuário</label>
+            <input type="text" name="username" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Senha</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <a href="{% url 'homepage' %}" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>
+<style>/* Estilos para a página de Login */
+
+    /* Login Container */
+    .login-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    .login-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 30px;
+        letter-spacing: -1px;
+    }
+    
+    /* Mensagens de Feedback */
+    .messages {
+        margin-bottom: 30px;
+    }
+    
+    .alert {
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .alert-success {
+        background: #34d399;
+        color: #1a1a1a;
+    }
+    
+    .alert-error {
+        background: #f87171;
+        color: #ffffff;
+    }
+    
+    /* Formulário de Login */
+    .login-form {
+        background: #252525;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .form-group label {
+        text-align: left;
+        font-size: 1rem;
+        color: #e0e0e0;
+        font-weight: 500;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background: #333333;
+        color: #e0e0e0;
+        font-size: 1rem;
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
+    }
+    
+    /* Botões */
+    .btn {
+        display: inline-block;
+        padding: 14px 30px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(90deg, #007aff, #005bb5);
+        color: #ffffff;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #005bb5, #003f7f);
+        transform: scale(1.05);
+    }
+    
+    .btn-secondary {
+        background: #333333;
+        color: #ffffff;
+    }
+    
+    .btn-secondary:hover {
+        background: #4a4a4a;
+        transform: scale(1.05);
+    }
+    
+    /* Ajustes para Responsividade */
+    @media (max-width: 576px) {
+        .login-container {
+            padding: 20px 15px;
+        }
+    
+        .login-title {
+            font-size: 2rem;
+        }
+    
+        .login-form {
+            padding: 20px;
+        }
+    
+        .btn {
+            padding: 12px 20px;
+            font-size: 1rem;
+        }
+    }</style>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Dar Baixa - Sistema de Inventário{% endblock %}
+
+{% block content %}
+<div class="give-low-container">
+    <h1 class="give-low-title">Dar Baixa no Componente</h1>
+    <p>Você está prestes a dar baixa no componente <strong>{{ component.nome_equipamento }}</strong>. Esta ação mudará o status para "Baixa". Deseja continuar?</p>
+    <form method="post" class="give-low-form">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Confirmar Baixa</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<!-- CSS Embutido -->
+<style>
+    /* Give Low Container */
+    .give-low-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .give-low-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 30px;
+        letter-spacing: -1px;
+    }
+
+    .give-low-container p {
+        font-size: 1rem;
+        color: #e0e0e0;
+        margin-bottom: 20px;
+    }
+
+    .give-low-container p strong {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    /* Formulário de Dar Baixa */
+    .give-low-form {
+        background: #252525;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    /* Botões */
+    .btn {
+        display: inline-block;
+        padding: 14px 30px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        color: #1a1a1a;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+        transform: scale(1.05);
+    }
+
+    .btn-secondary {
+        background: #333333;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background: #4a4a4a;
+        transform: scale(1.05);
+    }
+
+    /* Ajustes para Responsividade */
+    @media (max-width: 576px) {
+        .give-low-container {
+            padding: 20px 15px;
+        }
+
+        .give-low-title {
+            font-size: 2rem;
+        }
+
+        .give-low-form {
+            padding: 20px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}

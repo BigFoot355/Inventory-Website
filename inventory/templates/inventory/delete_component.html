@@ -1,0 +1,163 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Apagar Componente - Sistema de Inventário{% endblock %}
+
+{% block content %}
+<div class="delete-component-container">
+    <h1 class="delete-component-title">Apagar Componente</h1>
+
+    <!-- Mensagens de Feedback -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Confirmação de Exclusão -->
+    <div class="confirmation-box">
+        <p>Tem certeza que deseja apagar o componente <strong>{{ component.nome_equipamento }}</strong>?</p>
+        <p>Esta ação não pode ser desfeita.</p>
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<!-- CSS Embutido -->
+<style>
+    /* Delete Component Container */
+    .delete-component-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .delete-component-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 30px;
+        letter-spacing: -0.5px;
+    }
+
+    /* Mensagens de Feedback */
+    .messages {
+        margin-bottom: 30px;
+    }
+
+    .alert {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .alert-success {
+        background: #34d399;
+        color: #1a1a1a;
+    }
+
+    .alert-error {
+        background: #f87171;
+        color: #ffffff;
+    }
+
+    /* Caixa de Confirmação */
+    .confirmation-box {
+        background: #252525;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .confirmation-box p {
+        color: #e0e0e0;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .confirmation-box strong {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    /* Formulário de Exclusão */
+    .delete-form {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-danger {
+        background: #f87171;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-danger:hover {
+        background: #ef4444;
+        transform: scale(1.05);
+    }
+
+    .btn-secondary {
+        background: #333333;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background: #4a4a4a;
+        transform: scale(1.05);
+    }
+
+    /* Responsividade */
+    @media (max-width: 576px) {
+        .delete-component-container {
+            padding: 20px 15px;
+        }
+
+        .delete-component-title {
+            font-size: 2rem;
+        }
+
+        .confirmation-box {
+            padding: 20px;
+        }
+
+        .confirmation-box p {
+            font-size: 1rem;
+        }
+
+        .delete-form {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}

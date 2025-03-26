@@ -1,0 +1,33 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Início - Sistema de Inventário{% endblock %}
+
+{% block content %}
+<div class="homepage-hero">
+    <h1>Bem-vindo ao Sistema de Inventário</h1>
+    <p class="hero-subtitle">Gerencie seus equipamentos com eficiência e estilo.</p>
+    <div class="hero-buttons">
+        <a href="{% url 'dashboard' %}" class="btn-primary">Ver Dashboard</a>
+        <a href="{% url 'register_component' %}" class="btn-secondary">Registrar Equipamento</a>
+    </div>
+</div>
+
+<section class="features-section">
+    <h2>Por que usar nosso sistema?</h2>
+    <div class="features">
+        <div class="feature-card">
+            <h3>Registro Simples</h3>
+            <p>Adicione equipamentos com fotos e detalhes de localização em poucos cliques.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Controle de Status</h3>
+            <p>Dê baixa ou atualize o status dos equipamentos com facilidade.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Exportação Avançada</h3>
+            <p>Exporte seus dados para Excel ou PDF para relatórios detalhados.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

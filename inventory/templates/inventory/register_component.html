@@ -1,0 +1,211 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Registrar Componente - Sistema de Inventário{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <h1 class="register-title">Registrar Novo Componente</h1>
+
+    <!-- Mensagens de Feedback -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulário de Registro -->
+    <form method="post" enctype="multipart/form-data" class="register-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="curso">Curso</label>
+            <input type="text" name="curso" id="curso" required>
+        </div>
+        <div class="form-group">
+            <label for="disciplina">Disciplina</label>
+            <input type="text" name="disciplina" id="disciplina" required>
+        </div>
+        <div class="form-group">
+            <label for="nome_equipamento">Nome do Equipamento</label>
+            <input type="text" name="nome_equipamento" id="nome_equipamento" required>
+        </div>
+        <div class="form-group">
+            <label for="categoria">Categoria</label>
+            <input type="text" name="categoria" id="categoria" required>
+        </div>
+        <div class="form-group">
+            <label for="sub_categoria">Sub-categoria (opcional)</label>
+            <input type="text" name="sub_categoria" id="sub_categoria">
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea name="descricao" id="descricao" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="sala_arrumacao">Sala de Arrumação</label>
+            <select name="sala_arrumacao" id="sala_arrumacao" required>
+                <option value="" disabled selected>Selecione uma sala</option>
+                {% for room in rooms %}
+                    <option value="{{ room.id }}">{{ room.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="armario">Armário</label>
+            <select name="armario" id="armario" required>
+                <option value="" disabled selected>Selecione um armário</option>
+                {% for cabinet in cabinets %}
+                    <option value="{{ cabinet.id }}">{{ cabinet.name }} ({{ cabinet.room.name }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="gaveta">Gaveta (opcional)</label>
+            <input type="text" name="gaveta" id="gaveta">
+        </div>
+        <div class="form-group">
+            <label for="localizacao_aberta">Localização Aberta (opcional)</label>
+            <input type="text" name="localizacao_aberta" id="localizacao_aberta">
+        </div>
+        <div class="form-group">
+            <label for="quantidade">Quantidade</label>
+            <input type="number" name="quantidade" id="quantidade" value="1" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select name="status" id="status">
+                <option value="ativo">Ativo</option>
+                <option value="baixa">Baixa</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="foto">Foto (opcional)</label>
+            <input type="file" name="foto" id="foto" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>
+
+<!-- CSS Embutido -->
+<style>
+    .register-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .register-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 30px;
+        letter-spacing: -1px;
+    }
+
+    .messages {
+        margin-bottom: 30px;
+    }
+
+    .alert {
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .alert-success {
+        background: #34d399;
+        color: #1a1a1a;
+    }
+
+    .alert-error {
+        background: #f87171;
+        color: #ffffff;
+    }
+
+    .register-form {
+        background: #252525;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        text-align: left;
+        font-size: 1rem;
+        color: #e0e0e0;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background: #333333;
+        color: #e0e0e0;
+        font-size: 1rem;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 14px 30px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #007aff, #005bb5);
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #005bb5, #003f7f);
+        transform: scale(1.05);
+    }
+
+    .btn-secondary {
+        background: #333333;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background: #4a4a4a;
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
