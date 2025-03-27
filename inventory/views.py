@@ -39,18 +39,23 @@ def logout_view(request):
 # Dashboard (protegido)
 @login_required
 def dashboard(request):
-    query = request.GET.get('q')
-    if query:
-        # Filtra por nome do equipamento ou nome da sala
-        componentes = Component.objects.filter(
-            nome_equipamento__icontains=query
-        ) | Component.objects.filter(
-            sala_arrumacao__name__icontains=query
-        )
-    else:
-        componentes = Component.objects.all()
+    componentes = Component.objects.all()
     rooms = Room.objects.all()
     cabinets = Cabinet.objects.all()
+    
+    query = request.GET.get('q')
+    sala_id = request.GET.get('sala')
+    
+    if query:
+        componentes = componentes.filter(
+            nome_equipamento__icontains=query
+        ) | componentes.filter(
+            sala_arrumacao__name__icontains=query
+        )
+    
+    if sala_id:
+        componentes = componentes.filter(sala_arrumacao_id=sala_id)
+    
     return render(request, 'inventory/dashboard.html', {
         'componentes': componentes,
         'rooms': rooms,
@@ -75,22 +80,18 @@ def register_component(request):
         status = request.POST.get('status', 'ativo')
         foto = request.FILES.get('foto')
 
-        # Validação dos campos obrigatórios
         if not all([curso, disciplina, nome_equipamento, categoria, descricao, sala_arrumacao_id, armario_id, quantidade]):
             messages.error(request, 'Preencha todos os campos obrigatórios!')
             return redirect('register_component')
 
         try:
-            # Obter os objetos Room e Cabinet a partir dos IDs
             sala_arrumacao = Room.objects.get(id=sala_arrumacao_id)
             armario = Cabinet.objects.get(id=armario_id)
 
-            # Validação: Verificar se o armário pertence à sala selecionada
             if armario.room != sala_arrumacao:
                 messages.error(request, f'O armário "{armario.name}" pertence à sala "{armario.room.name}", mas você selecionou a sala "{sala_arrumacao.name}". Escolha um armário da mesma sala.')
                 return redirect('register_component')
 
-            # Criar o componente
             component = Component(
                 curso=curso,
                 disciplina=disciplina,
@@ -145,22 +146,18 @@ def edit_component(request, component_id):
         status = request.POST.get('status', component.status)
         foto = request.FILES.get('foto', component.foto)
 
-        # Validação dos campos obrigatórios
         if not all([curso, disciplina, nome_equipamento, categoria, descricao, sala_arrumacao_id, armario_id, quantidade]):
             messages.error(request, 'Preencha todos os campos obrigatórios!')
             return redirect('edit_component', component_id=component_id)
 
         try:
-            # Obter os objetos Room e Cabinet a partir dos IDs
             sala_arrumacao = Room.objects.get(id=sala_arrumacao_id)
             armario = Cabinet.objects.get(id=armario_id)
 
-            # Validação: Verificar se o armário pertence à sala selecionada
             if armario.room != sala_arrumacao:
                 messages.error(request, f'O armário "{armario.name}" pertence à sala "{armario.room.name}", mas você selecionou a sala "{sala_arrumacao.name}". Escolha um armário da mesma sala.')
                 return redirect('edit_component', component_id=component_id)
 
-            # Atualizar o componente
             component.curso = curso
             component.disciplina = disciplina
             component.nome_equipamento = nome_equipamento
@@ -256,7 +253,17 @@ def export_excel(request):
     ws.title = "Inventário"
     headers = ['Curso', 'Disciplina', 'Nome', 'Categoria', 'Sub-categoria', 'Descrição', 'Data de Registro', 'Sala', 'Armário', 'Gaveta', 'Localização', 'Quantidade', 'Status']
     ws.append(headers)
-    for comp in Component.objects.all():
+    
+    componentes = Component.objects.all()
+    query = request.GET.get('q')
+    sala_id = request.GET.get('sala')
+    
+    if query:
+        componentes = componentes.filter(nome_equipamento__icontains=query) | componentes.filter(sala_arrumacao__name__icontains=query)
+    if sala_id:
+        componentes = componentes.filter(sala_arrumacao_id=sala_id)
+    
+    for comp in componentes:
         ws.append([
             comp.curso, comp.disciplina, comp.nome_equipamento, comp.categoria, comp.sub_categoria,
             comp.descricao, str(comp.data_registo), comp.sala_arrumacao.name if comp.sala_arrumacao else '',
@@ -270,39 +277,66 @@ def export_excel(request):
 def export_pdf(request):
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
-    p.setFont("Helvetica", 12)
+    p.setFont("Helvetica-Bold", 14)
     p.drawString(30, 800, "Relatório de Inventário")
     p.setFont("Helvetica", 10)
+    
+    # Configuração da tabela
     y = 750
-    headers = ['Curso', 'Disciplina', 'Nome', 'Categoria', 'Sub-categoria', 'Descrição', 'Data', 'Sala', 'Armário', 'Gaveta', 'Localização', 'Qtd', 'Status']
-    x_positions = [30, 70, 110, 150, 190, 230, 270, 310, 350, 390, 430, 470, 510]
+    headers = ['Curso', 'Disciplina', 'Nome', 'Categoria', 'Sala', 'Armário', 'Qtd', 'Status']
+    x_positions = [30, 90, 150, 230, 310, 370, 450, 490]
+    col_widths = [60, 60, 80, 80, 60, 80, 40, 60]
+    
+    # Desenhar cabeçalho
+    p.setFillColor(colors.grey)
+    p.rect(30, y-5, 540, 20, fill=True, stroke=False)
+    p.setFillColor(colors.black)
     for i, header in enumerate(headers):
         p.drawString(x_positions[i], y, header)
-    p.setFillColor(colors.grey)
-    p.rect(30, y - 5, 540, 20, fill=True, stroke=False)
-    p.setFillColor(colors.black)
+    p.line(30, y-10, 570, y-10)
     y -= 30
-
-    for comp in Component.objects.all():
+    
+    # Filtrar componentes
+    componentes = Component.objects.all()
+    query = request.GET.get('q')
+    sala_id = request.GET.get('sala')
+    
+    if query:
+        componentes = componentes.filter(nome_equipamento__icontains=query) | componentes.filter(sala_arrumacao__name__icontains=query)
+    if sala_id:
+        componentes = componentes.filter(sala_arrumacao_id=sala_id)
+    
+    # Desenhar dados
+    for comp in componentes:
         if y < 50:
             p.showPage()
+            p.setFont("Helvetica-Bold", 14)
+            p.drawString(30, 800, "Relatório de Inventário")
             p.setFont("Helvetica", 10)
-            y = 800
+            y = 750
+            p.setFillColor(colors.grey)
+            p.rect(30, y-5, 540, 20, fill=True, stroke=False)
+            p.setFillColor(colors.black)
             for i, header in enumerate(headers):
                 p.drawString(x_positions[i], y, header)
-            p.setFillColor(colors.grey)
-            p.rect(30, y - 5, 540, 20, fill=True, stroke=False)
-            p.setFillColor(colors.black)
+            p.line(30, y-10, 570, y-10)
             y -= 30
+        
         values = [
-            comp.curso, comp.disciplina, comp.nome_equipamento, comp.categoria, comp.sub_categoria,
-            comp.descricao[:20], str(comp.data_registo), comp.sala_arrumacao.name if comp.sala_arrumacao else '',
-            comp.armario.name if comp.armario else '', comp.gaveta, comp.localizacao_aberta, str(comp.quantidade), comp.status
+            comp.curso[:10],
+            comp.disciplina[:10],
+            comp.nome_equipamento[:15],
+            comp.categoria[:15],
+            comp.sala_arrumacao.name if comp.sala_arrumacao else '',
+            comp.armario.name if comp.armario else '',
+            str(comp.quantidade),
+            comp.status
         ]
+        
         for i, value in enumerate(values):
-            p.drawString(x_positions[i], y, str(value))
+            p.drawString(x_positions[i], y, value)
         y -= 20
-
+    
     p.showPage()
     p.save()
     pdf = buffer.getvalue()
@@ -326,7 +360,6 @@ def delete_page(request):
 @login_required
 def delete_room(request, room_id):
     room = get_object_or_404(Room, id=room_id)
-    # Verificar se há componentes associados à sala
     if Component.objects.filter(sala_arrumacao=room).exists():
         messages.error(request, f'Não é possível apagar a sala "{room.name}" porque ela tem componentes associados.')
     else:
@@ -338,7 +371,6 @@ def delete_room(request, room_id):
 @login_required
 def delete_cabinet(request, cabinet_id):
     cabinet = get_object_or_404(Cabinet, id=cabinet_id)
-    # Verificar se há componentes associados ao armário
     if Component.objects.filter(armario=cabinet).exists():
         messages.error(request, f'Não é possível apagar o armário "{cabinet.name}" porque ele tem componentes associados.')
     else:

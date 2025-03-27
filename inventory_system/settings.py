@@ -24,11 +24,11 @@ SECRET_KEY = 'django-insecure-4!y@!=+mjf$l&0@vonng!+%^wuohiaoaxw8(4ro^_3r=kp(v2+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Hosts permitidos (vazio para localhost em desenvolvimento; adicione hosts reais em produção)
-ALLOWED_HOSTS = ['inventory-website-ggt9.onrender.com','localhost','192.168.25.6']
+# Hosts permitidos
+# Adicionado '127.0.0.1' para desenvolvimento local
+ALLOWED_HOSTS = ['inventory-website-ggt9.onrender.com', 'localhost', '192.168.25.6', '127.0.0.1']
 
 # Application definition
-# project/settings.py
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',  # Necessário para autenticação
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'inventory',  # Seu app
 ]
 
-# project/settings.py
+# Configurações de login/logout
 LOGIN_URL = '/login/'  # URL para onde o usuário será redirecionado se não estiver logado
 LOGIN_REDIRECT_URL = '/dashboard/'  # URL para onde o usuário será redirecionado após login
 LOGOUT_REDIRECT_URL = '/'  # URL para onde o usuário será redirecionado após logout
@@ -123,4 +123,3 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
